@@ -13,12 +13,13 @@ app = Flask(__name__)
 CORS(app, origins="0.0.0.0")
 CORS(app_views)
 app.register_blueprint(app_views)
+app.url_map.strict_slashes = False
 
 
 @app.teardown_appcontext
 def teardown(error):
     "for forward routing"
-    storage.close
+    storage.close()
 
 
 @app.errorhandler(404)
@@ -32,5 +33,5 @@ def not_found(err):
 if __name__ == "__main__":
     hbnb_host = getenv('HBNB_API_HOST')
     hbnb_port = getenv('HBNB_API_PORT')
-    app.run(host=hbnb_host, port=hbnb_port,
+    app.run(host='0.0.0.0', port=5000,
             threaded=True, debug=True)
