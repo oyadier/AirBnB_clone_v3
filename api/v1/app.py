@@ -26,3 +26,4 @@ if __name__ == "__main__":
     hbnb_port = getenv('HBNB_API_PORT')
     app.run(host=hbnb_host, port=hbnb_port,
             threaded=True, debug=True)
+
