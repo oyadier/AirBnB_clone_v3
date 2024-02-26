@@ -21,9 +21,16 @@ def teardown(error):
     storage.close
 
 
+@app.errorhandler(404)
+def not_found(err):
+    """
+        method to handle Page Not found error
+    """
+    return ({'error': 'Not found'}), 404
+
+
 if __name__ == "__main__":
     hbnb_host = getenv('HBNB_API_HOST')
     hbnb_port = getenv('HBNB_API_PORT')
     app.run(host=hbnb_host, port=hbnb_port,
             threaded=True, debug=True)
-
