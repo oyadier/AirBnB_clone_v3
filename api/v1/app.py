@@ -11,8 +11,8 @@ from os import getenv
 
 app = Flask(__name__)
 CORS(app, origins="0.0.0.0")
-CORS(app_views)
 app.register_blueprint(app_views)
+CORS(app_views)
 
 
 @app.teardown_appcontext
@@ -26,7 +26,7 @@ def not_found(err):
     """
         method to handle Page Not found error
     """
-    return ({"error": "Not found"}), 404
+    return ({'error': 'Not found'}), 404
 
 
 if __name__ == "__main__":
