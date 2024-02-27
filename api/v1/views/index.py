@@ -37,3 +37,5 @@ def obj_status():
     for k, v in stats.items():
         stats[k] = storage.count(v)
     return jsonify(stats)
+
+app.register_blueprint(index_view)

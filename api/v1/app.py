@@ -33,5 +33,5 @@ def not_found(err):
 if __name__ == "__main__":
     hbnb_host = getenv('HBNB_API_HOST')
     hbnb_port = getenv('HBNB_API_PORT')
-    app.run(host='0.0.0.0', port=5000,
+    app.run(host=hbnb_host, port=hbnb_port,
             threaded=True, debug=True)
