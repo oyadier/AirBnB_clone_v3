@@ -1,7 +1,8 @@
 
 #!/usr/bin/python3
 '''
-Create a new view for City objects - handles all default RESTful API actions.
+    Create a new view for City objects - handles all default RESTful API
+    actions.
 '''
 
 from flask import abort, jsonify, request
@@ -110,4 +111,3 @@ def bad_request(error):
     Returns Bad Request message for illegal requests to API.
     '''
     return jsonify({'error': 'Bad Request'}), 400
-
