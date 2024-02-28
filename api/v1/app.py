@@ -5,20 +5,20 @@
 from flask import Flask, jsonify, Blueprint
 from models import storage
 from flask_cors import CORS
+from api.v1.views.index import index_view
 from api.v1.views import app_views
 from os import getenv
 
 
 app = Flask(__name__)
-CORS(app, origins="0.0.0.0")
 app.register_blueprint(app_views)
-CORS(app_views)
+app.register_blueprint(index_view)
 
 
 @app.teardown_appcontext
 def teardown(error):
     "for forward routing"
-    storage.close
+    storage.close()
 
 
 @app.errorhandler(404)
