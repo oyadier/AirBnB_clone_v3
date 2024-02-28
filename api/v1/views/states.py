@@ -1,97 +1,73 @@
 #!/usr/bin/python3
-"""
-New view for State objects that handles all default RESTful API actions.
-"""
+""" A Flask route that returns json status response"""
 
-from flask import abort, jsonify, request
-from models.state import State
 from api.v1.views import app_views
-from models import storage
+from flask import jsonify, request, abort
+from models import storage, state
 
-@app_views.route('/states', methods=['GET'], strict_slashes=False)
-def get_all_states():
-    """
-    Retrieve the list of all State objects.
-    """
-    states = storage.all(State).values()
-    state_list = [state.to_dict() for state in states]
-    return jsonify(state_list)
+State = state.State
 
-@app_views.route('/states/<state_id>', methods=['GET'], strict_slashes=False)
+
+@app_views.route('/states', methods=['GET'])
+def get_states():
+    """Returns all states object in json format"""
+    states = [state.to_dict() for state in storage.all('State').values()]
+    return jsonify(states)
+
+
+@app_views.route('/states/<state_id>', methods=['GET'])
 def get_state(state_id):
-    """
-    Retrieves a State object.
-    """
-    state = storage.get(State, state_id)
-    if state:
-        return jsonify(state.to_dict())
-    else:
+    """Returns a specified state using the state id"""
+    state = storage.get('State', state_id)
+    if state is None:  # if id is not found return 404
         abort(404)
+    return jsonify(state.to_dict()), 200
+
 
 @app_views.route('/states/<state_id>', methods=['DELETE'])
 def delete_state(state_id):
-    """
-    Deletes a State object.
-    """
-    state = storage.get(State, state_id)
-    if state:
-        storage.delete(state)
-        storage.save()
-        return jsonify({}), 200
-    else:
+    """Deletes a specific state using the give id"""
+    state = storage.get('State', state_id)
+    # If the state_id is not linked to any State object, raise a 404 error
+    if state is None:
         abort(404)
+    state.delete()
+    storage.save()
+    return jsonify({}), 200
 
-@app_views.route('/states', methods=['POST'], strict_slashes=False)
+
+@app_views.route('/states', methods=['POST'])
 def create_state():
-    """
-    Creates state object.
-    """
-    if not request.get_json():
+    """Creates a new state object"""
+    data = request.get_json()
+    if data is None:
         abort(400, 'Not a JSON')
-
-    kwargs = request.get_json()
-    if 'name' not in kwargs:
+    if 'name' not in data:
         abort(400, 'Missing name')
-
-    state = State(**kwargs)
+    state = State(**data)
     state.save()
     return jsonify(state.to_dict()), 201
 
-@app_views.route('/states/<state_id>', methods=['PUT'], strict_slashes=False)
+
+
+@app_views.route('/states/<state_id>', methods=['PUT'])
 def update_state(state_id):
-    """
-    Update State object.
-    """
-    state = storage.get(State, state_id)
-    if state:
-        if not request.get_json():
-            abort(400, 'Not a JSON')
-
-        data = request.get_json()
-        ignore_keys = ['id', 'created_at', 'updated_at']
-        for key, value in data.items():
-            if key not in ignore_keys:
-                setattr(state, key, value)
-
-        state.save()
-        return jsonify(state.to_dict()), 200
-    else:
+    """Updates a state object with the given id"""
+    state = storage.get('State', state_id)
+    if state is None:
         abort(404)
 
+    try:
+        data = request.get_json()
+        if data is None:
+            abort(400, 'Not a JSON')
+        for key, value in data.items():
+            if key not in ['id', 'created_at', 'updated_at']:
+                setattr(state, key, value)
+        storage.save()
+        return jsonify(state.to_dict()), 200
+    except Exception as e:
+        abort(400, f'Error parsing JSON: {str(e)}')
 
-@app_views.errorhandler(404)
-def not_found(error):
-    """
-    Raise a 404 error.
-    """
-    response = {'error': 'Not found'}
-    return jsonify(response), 404
 
-@app_views.errorhandler(400)
-def bad_request(error):
-    """
-    Return a bad Request message for illegal requests to the API.
-    """
-    response = {'error': 'Bad Request'}
-    return jsonify(response), 400
 
