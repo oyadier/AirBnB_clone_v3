@@ -21,7 +21,7 @@ def api_status():
     return jsonify(response)
 
 
-@index_view.route('/status', methods=['GET'], strict_slashes=False)
+@app_views.route('/stats', methods=['GET'], strict_slashes=False)
 def obj_status():
     '''
         Create endpoint that retrieves the number of each objects by type.
@@ -37,5 +37,3 @@ def obj_status():
     for k, v in stats.items():
         stats[k] = storage.count(v)
     return jsonify(stats)
-
-app.register_blueprint(index_view)
