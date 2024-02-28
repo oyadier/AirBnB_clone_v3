@@ -7,6 +7,8 @@ Create a route `/status` on the object app_views.
 from flask import jsonify, Blueprint
 from api.v1.views import app_views
 from models import storage
+from models.state import State
+
 
 index_view = Blueprint('index_view', __name__,
                        template_folder='view', url_prefix='/api/v1')
