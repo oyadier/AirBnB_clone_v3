@@ -26,7 +26,7 @@ def not_found(err):
     """
         method to handle Page Not found error
     """
-    return ({"error": "Not found"}), 404
+    return ({'error': 'Not found'}), 404
 
 
 if __name__ == "__main__":
