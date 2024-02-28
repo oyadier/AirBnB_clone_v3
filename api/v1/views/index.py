@@ -28,7 +28,7 @@ def obj_status():
     '''
         Create endpoint that retrieves the number of each objects by type.
     '''
-    stats = {
+    classes = {
         "amenities": 'Amenity',
         "cities": 'City',
         "places": 'Place',
@@ -36,6 +36,7 @@ def obj_status():
         "states": 'State',
         "users": 'User'
     }
-    for k, v in stats.items():
-        stats[k] = storage.count(v)
-    return jsonify(stats)
+    cout_dict = {}
+    for cls in classes:
+        cout_dic[cls] = storage.count(classes[cls])
+    return jsonify(cout_dict)
