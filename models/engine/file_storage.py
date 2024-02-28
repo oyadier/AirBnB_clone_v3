@@ -77,13 +77,13 @@ class FileStorage:
 
                 Return (object), or None if there's no object
         """
-        if type(cls) is str:
-            cls = classes.get(cls)
-        if (cls is None):
-            return (None)
-        for item in self.__objects.values():
-            if item.__class__ == cls and item.id == id:
-                return item
+        obj_dic = self.all(cls)
+        for k, v in obj_dic.items():
+            mstring = cls + '.' + id
+            if k == mstring:
+                return v
+        
+        return None
 
     def count(self, cls=None):
         """A method to count the number of objects
@@ -92,8 +92,5 @@ class FileStorage:
 
                 Return: number of objects or if None then all existing obj
         """
-        if type(cls) is str:
-            cls = classes.get(cls)
-        if cls in None:
-            return len(self.all())
-        return len(self.all(cls))
+        obj_dic = self.all(cls)
+        return len(obj_dic)
