@@ -2,7 +2,7 @@
 """Creating a api using flask framework"""
 
 
-from flask import Flask, jsonify, Blueprint
+from flask import Flask, jsonify, make_response
 from models import storage
 from flask_cors import CORS
 from api.v1.views.index import index_view
@@ -11,8 +11,9 @@ from os import getenv
 
 
 app = Flask(__name__)
+cors = CORS(app, resources={r"/api/*": {"origins": "0.0.0.0"}})
+app.url_map.string_slashes = False
 app.register_blueprint(app_views)
-app.register_blueprint(index_view)
 
 
 @app.teardown_appcontext
@@ -26,7 +27,7 @@ def not_found(err):
     """
         method to handle Page Not found error
     """
-    return ({'error': 'Not found'}), 404
+    return make_response(jsonify({'error': 'Not found'}), 404)
 
 
 if __name__ == "__main__":
