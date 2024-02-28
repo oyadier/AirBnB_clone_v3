@@ -83,11 +83,17 @@ class DBStorage:
 
                 Return (object), or None if there's no object
         """
-        if type(cls) == str:
+        obj_dic = models.storage.all(cls)
+        for k, v in obj_dic.items():
+            mstring = cls + '.' + id
+            if k == mstring:
+                return v
+        return None
+        """if type(cls) == str:
             cls = classes.get(cls)
         if cls is None:
             return (None)
-        return self.__session.query(cls).filter(cls.id == id).first()
+        return self.__session.query(cls).filter(cls.id == id).first()"""
 
     def count(self, cls=None):
         """A method to count the number of objects
@@ -96,8 +102,12 @@ class DBStorage:
 
                 Return: number of objects or if None then all existing obj
         """
-        if type(cls) is str:
+        """
+        if type(cls) is str
             cls = classes.get(cls)
         if cls is None:
             return len(self.all())
         return len(self.all(cls))
+        """
+        obj_dic = models.storage.all(cls)
+        return len(obj_dic)
